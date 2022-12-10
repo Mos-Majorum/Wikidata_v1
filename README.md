@@ -8,12 +8,22 @@ This folder coutains the data files (JSON format) used in the network monitoring
 The content monitored is the relative investment of each community in the work of other communities among the Wikipedia platform. 
 To this aim, a database of articles is established and used to determine the cross-project contributions of influent members of the Wikipedia community. 
 
-![image](https://user-images.githubusercontent.com/120259436/206859002-f1958fb8-08af-467b-a3d8-557c2bcf6642.png)
+![newplot (1)](https://user-images.githubusercontent.com/120259436/206877804-4e0e7c4e-6859-4724-ba83-d60abd33c1db.png)
+
 
 ## Hypothesis 
-1- We believe that this work will show an above-average group behaviour of political contents (as opposed to non-political contents, such as sports). 
-2- We believe that theses contributors tend to edit articles advocating both FOR and AGAINST most topics (e.g. feminist rights).
-3- We believe that the political contributors are mostly left-leaning, politically. 
+
+1. We believe that this work will show an above-average group behaviour of political contents (as opposed to non-political contents, such as sports). 
+2. We believe that theses contributors tend to edit articles advocating both FOR and AGAINST most topics (e.g. feminist rights).
+3. We believe that the political contributors are mostly left-leaning, politically. 
+
+
+## Early Results
+
+![image](https://user-images.githubusercontent.com/120259436/206877735-bf937946-10cb-4fa9-b840-cf68029fac2c.png)
+![newplot (3)](https://user-images.githubusercontent.com/120259436/206877819-87bf9fd1-52b6-42c2-93a0-8785ac386d08.png)
+![newplot (2)](https://user-images.githubusercontent.com/120259436/206877829-06994d5e-0e7a-489d-adca-d1a2c62cd241.png)
+
 
 ## Future Work
 A paper could be published shortly to show the results of all tests conducted. 
