@@ -10,6 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
+import plotly.graph_objects as go
+import plotly.express as px
 
 # %% SETTINGS
 
@@ -58,73 +60,51 @@ for subpath in subpathlist:
                  print("Non-JSON file skipped")
 
 # %% CREATE BAYESIAN PROBABILITIES
-User_group = np.zeros([len(article_list),6])
-Raw_Count_per_group = np.zeros([6,6])
-
+Intersection_per_group = np.zeros([len(subpathlist),len(subpathlist)])
+Union_per_group = np.zeros([len(subpathlist),len(subpathlist)])
 for user_index in np.arange(0,len(article_list),1):
-    for article_index in np.arange(0,len(article_list[user_index]),1):
-        local_group = page_group[page_list.index(article_list[user_index][article_index])]
-        User_group[user_index,local_group]+=edit_list[user_index][article_index]
+    for i in np.arange(0,len(subpathlist),1):
+        for j in np.arange(0,len(subpathlist),1):
+            if i==j:
+                Intersection_per_group[i,i]+=User_group[user_index,i]
+                Union_per_group[i,i]+=User_group[user_index,i]
+            else:
+                if (j>i)and((User_group[user_index,i]>0)and(User_group[user_index,j]>0)):
+                    Intersection_per_group[i,j]+=(User_group[user_index,i]+User_group[user_index,j])
+                if (j>i)and((User_group[user_index,i]>0)or(User_group[user_index,j]>0)):
+                    Union_per_group[i,j]+=(User_group[user_index,i]+User_group[user_index,j])
 
-for user_index in np.arange(0,len(article_list),1):
-    Raw_Count_per_group[0,0]+=User_group[user_index,0]
-    Raw_Count_per_group[1,1]+=User_group[user_index,1]
-    Raw_Count_per_group[2,2]+=User_group[user_index,2]
-    Raw_Count_per_group[3,3]+=User_group[user_index,3]
-    Raw_Count_per_group[4,4]+=User_group[user_index,4]
-    Raw_Count_per_group[5,5]+=User_group[user_index,5]
-    if (User_group[user_index,0]>0)and(User_group[user_index,1]>0):
-        Raw_Count_per_group[0,1]+=(User_group[user_index,1]+User_group[user_index,0])*0.5
-    if (User_group[user_index,0]>0)and(User_group[user_index,2]>0):
-        Raw_Count_per_group[0,2]+=(User_group[user_index,2]+User_group[user_index,0])*0.5
-    if (User_group[user_index,0]>0)and(User_group[user_index,3]>0):
-        Raw_Count_per_group[0,3]+=(User_group[user_index,3]+User_group[user_index,0])*0.5
-    if (User_group[user_index,0]>0)and(User_group[user_index,4]>0):
-        Raw_Count_per_group[0,4]+=(User_group[user_index,4]+User_group[user_index,0])*0.5
-    if (User_group[user_index,0]>0)and(User_group[user_index,5]>0):
-        Raw_Count_per_group[0,5]+=(User_group[user_index,5]+User_group[user_index,0])*0.5   
-    if (User_group[user_index,1]>0)and(User_group[user_index,2]>0):
-        Raw_Count_per_group[1,2]+=(User_group[user_index,2]+User_group[user_index,1])*0.5
-    if (User_group[user_index,1]>0)and(User_group[user_index,3]>0):
-        Raw_Count_per_group[1,3]+=(User_group[user_index,3]+User_group[user_index,1])*0.5
-    if (User_group[user_index,1]>0)and(User_group[user_index,4]>0):
-        Raw_Count_per_group[1,4]+=(User_group[user_index,4]+User_group[user_index,1])*0.5
-    if (User_group[user_index,1]>0)and(User_group[user_index,5]>0):
-        Raw_Count_per_group[1,5]+=(User_group[user_index,5]+User_group[user_index,1])*0.5
-    if (User_group[user_index,2]>0)and(User_group[user_index,3]>0):
-        Raw_Count_per_group[2,3]+=(User_group[user_index,3]+User_group[user_index,2])*0.5
-    if (User_group[user_index,2]>0)and(User_group[user_index,4]>0):
-        Raw_Count_per_group[2,4]+=(User_group[user_index,4]+User_group[user_index,2])*0.5
-    if (User_group[user_index,2]>0)and(User_group[user_index,5]>0):
-        Raw_Count_per_group[2,5]+=(User_group[user_index,5]+User_group[user_index,2])*0.5
-    if (User_group[user_index,3]>0)and(User_group[user_index,4]>0):
-        Raw_Count_per_group[3,4]+=(User_group[user_index,4]+User_group[user_index,3])*0.5
-    if (User_group[user_index,3]>0)and(User_group[user_index,5]>0):
-        Raw_Count_per_group[3,5]+=(User_group[user_index,5]+User_group[user_index,3])*0.5
-    if (User_group[user_index,4]>0)and(User_group[user_index,5]>0):
-        Raw_Count_per_group[4,5]+=(User_group[user_index,5]+User_group[user_index,4])*0.5
-  
-Normalized_Count_per_group = Raw_Count_per_group
-Normalized_Count_per_group[0,:] = Normalized_Count_per_group[0,:]/(Normalized_Count_per_group[0,0])
-Normalized_Count_per_group[1,:] = Normalized_Count_per_group[1,:]/(Normalized_Count_per_group[1,1])
-Normalized_Count_per_group[2,:] = Normalized_Count_per_group[2,:]/(Normalized_Count_per_group[2,2])
-Normalized_Count_per_group[3,:] = Normalized_Count_per_group[3,:]/(Normalized_Count_per_group[3,3])
-Normalized_Count_per_group[4,:] = Normalized_Count_per_group[4,:]/(Normalized_Count_per_group[4,4])
-Normalized_Count_per_group[5,:] = Normalized_Count_per_group[5,:]/(Normalized_Count_per_group[5,5])
+Normalized_Count_per_group = np.zeros([len(subpathlist),len(subpathlist)])
+for i in np.arange(0,len(subpathlist),1):
+    for j in np.arange(0,len(subpathlist),1):
+        Normalized_Count_per_group[i,j]=Intersection_per_group[i,j]/Union_per_group[i,j]
 
-x_group = ["Feminisme","LGBT","Racisme","TheorieWoke","CritiqueWoke","Groupe_Temoin"]
-y_group = ["Feminisme","LGBT","Racisme","TheorieWoke","CritiqueWoke","Groupe_Temoin"]
-fig = plt.figure()
-ax = fig.add_subplot(111)
-cax = ax.matshow(Normalized_Count_per_group, interpolation='nearest', cmap="gray")
-for i in np.arange(0,6,1):
-    for j in np.arange(0,6,1):
-        c = np.round(Normalized_Count_per_group[j,i],3)
-        ax.text(i, j, str(c), va='center', ha='center')
-fig.colorbar(cax)
-#fig.colorbar.set_label('# of edits', rotation=270)
+# %% CREATE USER ANALYSIS
+#define data
+data = []
+for i in np.arange(0,len(subpathlist),1):
+    data.append(page_group.count(i))
 
-ax.set_xticklabels(['']+x_group)
-ax.set_yticklabels(['']+y_group)
-plt.setp(ax.get_xticklabels(), rotation=45, ha='left')
-plt.show()
+#create heatmap
+fig = px.imshow(np.round(Normalized_Count_per_group,3), labels=dict(x="Groupe d'origine", y="Probabilité de contribution", color="Probabilité"),
+                x=subpathlist, y=subpathlist,text_auto=True)
+fig.update_layout(title_text="Bayesian probability of cross-contribution", font_size=10)
+fig.write_html('plot_edit_map.html', auto_open=False)
+
+#create pie chart
+fig = go.Figure(data=[go.Pie(labels=subpathlist, values=data)])
+fig.update_layout(title_text="Article base distribution", font_size=10)
+fig.write_html('plot_pie_groups.html', auto_open=False)
+
+#create pie chart
+top_contributors = []
+top_edits = []
+top = 30
+for i in np.arange(0,top,1):
+    top_contributors.append(user_list[np.argsort(edit_count)[-i]])
+    top_edits.append(edit_count[np.argsort(edit_count)[-i]])
+top_contributors.append("OTHERS")
+top_edits.append(np.sum(edit_count)-np.sum(top_edits))
+fig = go.Figure(data=[go.Pie(labels=top_contributors, values=top_edits)])
+fig.update_layout(title_text="Top "+str(top)+" contributors", font_size=10)
+fig.write_html('plot_top_contributors.html', auto_open=False)
