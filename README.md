@@ -20,6 +20,10 @@ To this aim, a database of articles is established and used to determine the cro
 
 ## Early Results
 
+In group links among users (computed from users in discussion pages). 
+![image](https://user-images.githubusercontent.com/120259436/206926900-510097a6-d62d-4c8d-a4d6-f09772025af3.png)
+
+Cross-group contributions computed from top contributors information.
 ![image](https://user-images.githubusercontent.com/120259436/206877735-bf937946-10cb-4fa9-b840-cf68029fac2c.png)
 ![newplot (3)](https://user-images.githubusercontent.com/120259436/206877819-87bf9fd1-52b6-42c2-93a0-8785ac386d08.png)
 ![newplot (2)](https://user-images.githubusercontent.com/120259436/206877829-06994d5e-0e7a-489d-adca-d1a2c62cd241.png)
